@@ -1,0 +1,67 @@
+pragma solidity ^0.5.0;
+
+contract survey1{
+    address payable public owner ; // 合約發起人
+    address[] funderIndexs;
+    uint QuestionnaireTitleNumber;
+    uint[] useranswer;
+  
+    mapping (address => Funder) public funders;
+    mapping(uint => Questionnaire) questionnaires;
+  
+    //填答者結構
+    struct Funder {  
+      address addr;
+      uint amount;
+      uint createdAt;
+      string name;
+      mapping(uint => Questionnaire) questionnaires;
+    }
+  
+    //問卷結構
+    struct Questionnaire{
+      string Question;
+      uint Answer;
+    }
+  
+    modifier onlyOwner{
+        require(msg.sender == owner, "not owner");
+        _;
+    }
+
+  //新增問卷內容與取得題數
+  function setQuestionnaireTitle(string memory _question) public returns(uint qID){
+    qID=QuestionnaireTitleNumber++;
+    questionnaires[qID].Question=_question;
+  }
+
+  //新增填答者
+  function user_add(uint _amount, string memory _name) public {
+    funderIndexs.push(msg.sender); //以填答者地址為索引
+    funders[msg.sender] = Funder(msg.sender, _amount, now, _name); //填答者個資
+    }
+
+   //填答者選擇題號回答問卷    
+  function user_answer(uint _number,uint _answer) public {
+    /*for (uint i=0;i < QuestionnaireTitleNumber;i++){  
+        QuestionnaireTitleNumber.push();
+        funders[msg.sender].questionnaires[i].Answer = _answer;
+        
+    }*/
+    funders[msg.sender].questionnaires[_number].Answer = _answer;
+    
+  }    
+    
+    //for (uint i=0;i <  )
+    //funders[msg.sender].Questionnaire[0]=;    
+
+  function iterable() public {
+    for (uint i = 0; i < funderIndexs.length; i++) {
+      Funder storage funder = funders[funderIndexs[i]];
+      // ...  
+    }
+  }
+
+}
+
+
